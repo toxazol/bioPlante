@@ -52,7 +52,7 @@ public class grow : MonoBehaviour
     List<Vector2> preparePath(List<Vector2> path)
     {
         List<Vector2> newPath = new List<Vector2>();
-        newPath.Add(currentPath[0]);
+        newPath.Add(path[0]);
         for (int i = 1; i < path.Count; i++)
         {
             var point = path[i];
@@ -72,20 +72,30 @@ public class grow : MonoBehaviour
     {
         for (int i = 0; i + 1 < currentPath.Count; i++)
         {
-            GameObject branchInstance = Instantiate(branch);
-            var currentLineRenderer = branchInstance.GetComponent<LineRenderer>();
-            currentLineRenderer.SetPosition(0, currentPath[i]);
-            currentLineRenderer.SetPosition(1, currentPath[i+1]);
+            // transform
+            GameObject branchSegmentInstance = Instantiate(branch);
+            branchSegmentInstance.transform.position = currentPath[i];
+            //do I have to set correct rotation?
+            Vector2 directionVector = currentPath[i+1] - currentPath[i];
 
-            EdgeCollider2D collider = currentLineRenderer.gameObject.AddComponent<EdgeCollider2D>();
-            collider.SetPoints(new List<Vector2> {currentPath[i], currentPath[i+1]});
+            var currentLineRenderer = branchSegmentInstance.GetComponent<LineRenderer>();
+            currentLineRenderer.SetPosition(0, Vector2.zero);
+            currentLineRenderer.SetPosition(1, directionVector);
+
+            branchSegmentInstance.transform.position = currentPath[i];
+            
+            EdgeCollider2D collider = branchSegmentInstance.AddComponent<EdgeCollider2D>();
+            collider.SetPoints(new List<Vector2> {Vector2.zero, directionVector});
             collider.edgeRadius = colliderEndWidth;
-            Rigidbody2D rigidBody = currentLineRenderer.gameObject.AddComponent<Rigidbody2D>();
-            FixedJoint2D fixedJoint = currentLineRenderer.gameObject.AddComponent<FixedJoint2D>();
+            
+            Rigidbody2D rigidBody = branchSegmentInstance.AddComponent<Rigidbody2D>();
+            FixedJoint2D fixedJoint = branchSegmentInstance.AddComponent<FixedJoint2D>();
             fixedJoint.dampingRatio = dampingRatio;
             fixedJoint.frequency = frequency;
             fixedJoint.connectedBody = parentBranch.gameObject.GetComponent<Rigidbody2D>();
-            parentBranch = branchInstance;
+            
+            parentBranch = branchSegmentInstance;
+            
 
             yield return new WaitForSeconds(slowTimestep);
         }
