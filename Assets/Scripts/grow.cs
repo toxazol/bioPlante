@@ -6,7 +6,7 @@ using UnityEngine;
 public class grow : MonoBehaviour
 {
     public Camera m_camera;
-    public GameObject branch;
+    public GameObject branchSegment;
     public GameObject dottedLine;
 
     public float colliderEndWidth = .16F;
@@ -15,10 +15,11 @@ public class grow : MonoBehaviour
     public float frequency = 10F;
     public float segmentLength = 0.5F;
 
-    GameObject parentBranch;
+    public bool growingStarted = false;
+
+    GameObject parentBranchSegment;
     List<Vector2> currentPath = new List<Vector2>();
     Vector2 lastPos;
-    bool started = false;
     LineRenderer dottedLineRenderer; 
     GameObject dottedLineInstance;
 
@@ -37,14 +38,15 @@ public class grow : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Mouse0) && CheckCollision())
         {
             StartPath();
-            started = true;
+            growingStarted = true;
         }
-        else if (Input.GetKey(KeyCode.Mouse0) && started)
+        else if (Input.GetKey(KeyCode.Mouse0) && growingStarted)
         {
             PointToMousePos();
         }
         else if(Input.GetKeyUp(KeyCode.Mouse0) && currentPath.Count > 0)
         {
+            growingStarted = false;
             currentPath = preparePath(currentPath);
             StartCoroutine(GrowCoroutine());
         }
@@ -71,10 +73,12 @@ public class grow : MonoBehaviour
 
     IEnumerator GrowCoroutine()
     {
+        // var branch = new GameObject("Branch");
+        GameObject [] branch = new GameObject [currentPath.Count-1]; 
         for (int i = 0; i + 1 < currentPath.Count; i++)
         {
             // transform
-            GameObject branchSegmentInstance = Instantiate(branch);
+            GameObject branchSegmentInstance = Instantiate(branchSegment);
             branchSegmentInstance.transform.position = currentPath[i];
             //do I have to set correct rotation?
             Vector2 directionVector = currentPath[i+1] - currentPath[i];
@@ -93,16 +97,23 @@ public class grow : MonoBehaviour
             FixedJoint2D fixedJoint = branchSegmentInstance.AddComponent<FixedJoint2D>();
             fixedJoint.dampingRatio = dampingRatio;
             fixedJoint.frequency = frequency;
-            fixedJoint.connectedBody = parentBranch.gameObject.GetComponent<Rigidbody2D>();
+            fixedJoint.connectedBody = parentBranchSegment.gameObject.GetComponent<Rigidbody2D>();
+            rigidBody.simulated = false;
             
-            parentBranch = branchSegmentInstance;
-            
+            parentBranchSegment = branchSegmentInstance;
+            branch[i] = branchSegmentInstance;
 
             yield return new WaitForSeconds(slowTimestep);
         }
+
+        // start simulation after fully grown
+        for (int i = 0; i + 1 < currentPath.Count; i++)
+        {
+            branch[i].GetComponent<Rigidbody2D>().simulated = true;
+        }
+
         Destroy(dottedLineInstance);
         currentPath = new List<Vector2>();
-        started = false;
     }
 
     void StartPath() 
@@ -141,7 +152,7 @@ public class grow : MonoBehaviour
         RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction, Mathf.Infinity);
         if (hit.collider != null && hit.collider.gameObject.CompareTag("Player"))
         {
-            parentBranch = hit.collider.gameObject;
+            parentBranchSegment = hit.collider.gameObject;
             return true;
         }
         return false;
