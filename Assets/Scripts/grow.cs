@@ -73,21 +73,28 @@ public class grow : MonoBehaviour
 
     IEnumerator GrowCoroutine()
     {
-        // var branch = new GameObject("Branch");
-        GameObject [] branch = new GameObject [currentPath.Count-1]; 
+
         for (int i = 0; i + 1 < currentPath.Count; i++)
         {
-            // transform
+
             GameObject branchSegmentInstance = Instantiate(branchSegment);
-            branchSegmentInstance.transform.position = currentPath[i];
+             
+            if(i == 0) 
+            {
+                branchSegmentInstance.transform.position = currentPath[0]; 
+            }
+            else // start new segment on the end of previous one
+            {  
+                Vector3 previousDirectionVector = currentPath[i] - currentPath[i-1];
+                branchSegmentInstance.transform.position = parentBranchSegment.transform.position + previousDirectionVector;
+            }
+        
             //do I have to set correct rotation?
             Vector2 directionVector = currentPath[i+1] - currentPath[i];
 
             var currentLineRenderer = branchSegmentInstance.GetComponent<LineRenderer>();
             currentLineRenderer.SetPosition(0, Vector2.zero);
             currentLineRenderer.SetPosition(1, directionVector);
-
-            branchSegmentInstance.transform.position = currentPath[i];
             
             EdgeCollider2D collider = branchSegmentInstance.AddComponent<EdgeCollider2D>();
             collider.SetPoints(new List<Vector2> {Vector2.zero, directionVector});
@@ -98,18 +105,10 @@ public class grow : MonoBehaviour
             fixedJoint.dampingRatio = dampingRatio;
             fixedJoint.frequency = frequency;
             fixedJoint.connectedBody = parentBranchSegment.gameObject.GetComponent<Rigidbody2D>();
-            rigidBody.simulated = false;
             
             parentBranchSegment = branchSegmentInstance;
-            branch[i] = branchSegmentInstance;
 
             yield return new WaitForSeconds(slowTimestep);
-        }
-
-        // start simulation after fully grown
-        for (int i = 0; i + 1 < currentPath.Count; i++)
-        {
-            branch[i].GetComponent<Rigidbody2D>().simulated = true;
         }
 
         Destroy(dottedLineInstance);
