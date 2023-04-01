@@ -7,19 +7,21 @@ public class grow : MonoBehaviour
 {
     public Camera m_camera;
     public GameObject branch;
-
-    private GameObject parentBranch;
-
-    List<Vector2> currentPath = new List<Vector2>();
-    Vector2 lastPos;
-
-    bool started = false;
+    public GameObject dottedLine;
 
     public float colliderEndWidth = .16F;
     public float slowTimestep = 0.04F;
     public float dampingRatio = 1F;
     public float frequency = 10F;
     public float segmentLength = 0.5F;
+
+    GameObject parentBranch;
+    List<Vector2> currentPath = new List<Vector2>();
+    Vector2 lastPos;
+    bool started = false;
+    LineRenderer dottedLineRenderer; 
+    GameObject dottedLineInstance;
+
 
     private void Start() {
 
@@ -45,7 +47,6 @@ public class grow : MonoBehaviour
         {
             currentPath = preparePath(currentPath);
             StartCoroutine(GrowCoroutine());
-
         }
     }
 
@@ -99,7 +100,7 @@ public class grow : MonoBehaviour
 
             yield return new WaitForSeconds(slowTimestep);
         }
-
+        Destroy(dottedLineInstance);
         currentPath = new List<Vector2>();
         started = false;
     }
@@ -107,12 +108,17 @@ public class grow : MonoBehaviour
     void StartPath() 
     {
         Vector2 mousePos = m_camera.ScreenToWorldPoint(Input.mousePosition);
+        dottedLineInstance = Instantiate(dottedLine);
+        dottedLineRenderer = dottedLineInstance.GetComponent<LineRenderer>();
+        dottedLineRenderer.SetPosition(0, mousePos);
+        dottedLineRenderer.SetPosition(1, mousePos);
         currentPath.Add(mousePos);
     }
 
     void AddAPoint(Vector2 pointPos) 
     {
         currentPath.Add(pointPos);
+        dottedLineRenderer.SetPosition(dottedLineRenderer.positionCount++, pointPos);
     }
 
     void PointToMousePos() 
