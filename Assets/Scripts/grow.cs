@@ -8,9 +8,10 @@ public class grow : MonoBehaviour
     public Camera m_camera;
     public GameObject branchSegment;
     public GameObject dottedLine;
+    public growthManager growthManager;
 
     public float colliderEndWidth = .16F;
-    public float slowTimestep = 0.02F;
+    public float growTimestep = 0.02F;
     public float dampingRatio = 0.5F;
     public float frequency = 10F;
     public float segmentLength = 0.1F;
@@ -80,6 +81,12 @@ public class grow : MonoBehaviour
 
         for (int i = 0; i + 1 < currentPath.Count; i++)
         {
+            if(growthManager.curGrowthPoints <= 0) 
+            {
+                StopGrowth();
+                break;
+            }
+            growthManager.Grow(1);
 
             GameObject branchSegmentInstance = Instantiate(branchSegment);
 
@@ -113,9 +120,15 @@ public class grow : MonoBehaviour
 
             parentBranchSegment = branchSegmentInstance;
 
-            yield return new WaitForSeconds(slowTimestep);
+
+            yield return new WaitForSeconds(growTimestep);
         }
 
+        StopGrowth();
+    }
+
+    void StopGrowth()
+    {
         Destroy(dottedLineInstance);
         currentPath = new List<Vector2>();
         isGrowing = false;
