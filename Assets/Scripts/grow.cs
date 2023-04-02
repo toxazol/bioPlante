@@ -9,12 +9,11 @@ public class grow : MonoBehaviour
     public GameObject branchSegment;
     public GameObject dottedLine;
 
-    // public string collisionLayerName = "Default";
     public float colliderEndWidth = .16F;
-    public float slowTimestep = 0.04F;
-    public float dampingRatio = 1F;
+    public float slowTimestep = 0.02F;
+    public float dampingRatio = 0.5F;
     public float frequency = 10F;
-    public float segmentLength = 0.5F;
+    public float segmentLength = 0.1F;
 
     public bool isDrawing = false;
     bool isGrowing = false;
@@ -95,25 +94,8 @@ public class grow : MonoBehaviour
                 Vector3 previousDirectionVector = currentPath[i] - currentPath[i-1];
                 branchSegmentInstance.transform.position = parentBranchSegment.transform.position + previousDirectionVector;
             }
-        
-            //TODO: do I have to set correct transform rotation?
-            Vector3 directionVector = currentPath[i+1] - currentPath[i];
-            // Vector3 nextDirectionVector = i+2 < currentPath.Count ? currentPath[i+2] - currentPath[i+1] : Vector3.zero;
-            // Debug.DrawLine(branchSegmentInstance.transform.position, 
-            //     branchSegmentInstance.transform.position + directionVector, Color.cyan, 3000);
 
-            // check wall penetration
-            // var nextPosition = branchSegmentInstance.transform.position + directionVector;
-            // var afterNextPosition = nextPosition + nextDirectionVector;
-            // if(CheckCollision(nextPosition, collisionLayerName) 
-            //     && !CheckCollision(afterNextPosition, collisionLayerName))
-            // {
-            //     Debug.Log("PENETRATION DETECTED");
-            //     Destroy(branchSegmentInstance);
-            //     Destroy(dottedLineInstance);
-            //     currentPath = new List<Vector2>();
-            //     break;
-            // }
+            Vector3 directionVector = currentPath[i+1] - currentPath[i];
 
             var currentLineRenderer = branchSegmentInstance.GetComponent<LineRenderer>();
             currentLineRenderer.SetPosition(0, Vector2.zero);
@@ -128,9 +110,7 @@ public class grow : MonoBehaviour
             fixedJoint.dampingRatio = dampingRatio;
             fixedJoint.frequency = frequency;
             fixedJoint.connectedBody = parentBranchSegment.gameObject.GetComponent<Rigidbody2D>();
-            // fixedJoint.autoConfigureConnectedAnchor = false;
-            // fixedJoint.connectedAnchor = new Vector2(0, segmentLength);
-            
+
             parentBranchSegment = branchSegmentInstance;
 
             yield return new WaitForSeconds(slowTimestep);
