@@ -9,13 +9,15 @@ public class grow : MonoBehaviour
     public GameObject branchSegment;
     public GameObject dottedLine;
 
+    // public string collisionLayerName = "Default";
     public float colliderEndWidth = .16F;
     public float slowTimestep = 0.04F;
     public float dampingRatio = 1F;
     public float frequency = 10F;
     public float segmentLength = 0.5F;
 
-    public bool growingStarted = false;
+    public bool isDrawing = false;
+    bool isGrowing = false;
 
     GameObject parentBranchSegment;
     List<Vector2> currentPath = new List<Vector2>();
@@ -35,19 +37,22 @@ public class grow : MonoBehaviour
 
     void Drawing() 
     {
-        if (Input.GetKeyDown(KeyCode.Mouse0) && CheckCollision())
+        if (Input.GetKeyDown(KeyCode.Mouse0) 
+            && !isGrowing
+            && CheckCollision(Camera.main.ScreenToWorldPoint(Input.mousePosition), "Player"))
         {
             StartPath();
-            growingStarted = true;
+            isDrawing = true;
         }
-        else if (Input.GetKey(KeyCode.Mouse0) && growingStarted)
+        else if (Input.GetKey(KeyCode.Mouse0) && isDrawing)
         {
             PointToMousePos();
         }
         else if(Input.GetKeyUp(KeyCode.Mouse0) && currentPath.Count > 0)
         {
-            growingStarted = false;
+            isDrawing = false;
             currentPath = preparePath(currentPath);
+            isGrowing = true;
             StartCoroutine(GrowCoroutine());
         }
     }
@@ -78,19 +83,37 @@ public class grow : MonoBehaviour
         {
 
             GameObject branchSegmentInstance = Instantiate(branchSegment);
-             
-            if(i == 0) 
+
+            // start new segment on the end of previous one
+            if(i == 0)
             {
-                branchSegmentInstance.transform.position = currentPath[0]; 
+                branchSegmentInstance.transform.position = parentBranchSegment.transform.position 
+                    + parentBranchSegment.GetComponent<LineRenderer>().GetPosition(1); 
             }
-            else // start new segment on the end of previous one
+            else
             {  
                 Vector3 previousDirectionVector = currentPath[i] - currentPath[i-1];
                 branchSegmentInstance.transform.position = parentBranchSegment.transform.position + previousDirectionVector;
             }
         
-            //do I have to set correct rotation?
-            Vector2 directionVector = currentPath[i+1] - currentPath[i];
+            //TODO: do I have to set correct transform rotation?
+            Vector3 directionVector = currentPath[i+1] - currentPath[i];
+            // Vector3 nextDirectionVector = i+2 < currentPath.Count ? currentPath[i+2] - currentPath[i+1] : Vector3.zero;
+            // Debug.DrawLine(branchSegmentInstance.transform.position, 
+            //     branchSegmentInstance.transform.position + directionVector, Color.cyan, 3000);
+
+            // check wall penetration
+            // var nextPosition = branchSegmentInstance.transform.position + directionVector;
+            // var afterNextPosition = nextPosition + nextDirectionVector;
+            // if(CheckCollision(nextPosition, collisionLayerName) 
+            //     && !CheckCollision(afterNextPosition, collisionLayerName))
+            // {
+            //     Debug.Log("PENETRATION DETECTED");
+            //     Destroy(branchSegmentInstance);
+            //     Destroy(dottedLineInstance);
+            //     currentPath = new List<Vector2>();
+            //     break;
+            // }
 
             var currentLineRenderer = branchSegmentInstance.GetComponent<LineRenderer>();
             currentLineRenderer.SetPosition(0, Vector2.zero);
@@ -105,6 +128,8 @@ public class grow : MonoBehaviour
             fixedJoint.dampingRatio = dampingRatio;
             fixedJoint.frequency = frequency;
             fixedJoint.connectedBody = parentBranchSegment.gameObject.GetComponent<Rigidbody2D>();
+            // fixedJoint.autoConfigureConnectedAnchor = false;
+            // fixedJoint.connectedAnchor = new Vector2(0, segmentLength);
             
             parentBranchSegment = branchSegmentInstance;
 
@@ -113,6 +138,7 @@ public class grow : MonoBehaviour
 
         Destroy(dottedLineInstance);
         currentPath = new List<Vector2>();
+        isGrowing = false;
     }
 
     void StartPath() 
@@ -141,17 +167,16 @@ public class grow : MonoBehaviour
         }
     }
 
-    bool CheckCollision()
+    bool CheckCollision(Vector3 position, string layerName)
     {
-        // Create a ray from the mouse position
-        Vector2 rayPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Ray2D ray = new Ray2D(rayPosition, Vector2.zero);
+        int collideLayer = LayerMask.GetMask(layerName);
+        var colliders = Physics2D.OverlapPointAll(position, collideLayer);
 
-        // Check if the ray hits an object
-        RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction, Mathf.Infinity);
-        if (hit.collider != null && hit.collider.gameObject.CompareTag("Player"))
+        if (colliders.Length > 0)
         {
-            parentBranchSegment = hit.collider.gameObject;
+            //TODO: parent set should be replaced by return
+            //TODO: shouldnt be zero
+            parentBranchSegment = colliders[0].gameObject;
             return true;
         }
         return false;

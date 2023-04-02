@@ -14,7 +14,7 @@ public class drag : MonoBehaviour
     // }
     void LateUpdate () {
 
-        if (Input.GetKey(KeyCode.Mouse0) && !Grow.GetComponent<grow>().growingStarted)
+        if (Input.GetKey(KeyCode.Mouse0) && !Grow.GetComponent<grow>().isDrawing)
         {
             Diference = (Camera.main.ScreenToWorldPoint(Input.mousePosition)) - Camera.main.transform.position;
             if (Drag == false)

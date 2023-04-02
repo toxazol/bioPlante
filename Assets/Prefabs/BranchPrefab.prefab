@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8345099541018079812}
   - component: {fileID: 8345099541018079813}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: BranchPrefab
   m_TagString: Player
   m_Icon: {fileID: 0}

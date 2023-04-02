@@ -2110,6 +2110,7 @@ GameObject:
   - component: {fileID: 519420032}
   - component: {fileID: 519420031}
   - component: {fileID: 519420029}
+  - component: {fileID: 519420033}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -2152,7 +2153,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 4.290752
+  orthographic size: 5.1328144
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -2176,13 +2177,26 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.37, y: -2.42, z: -10}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: -0.05, y: -0.8, z: -10}
+  m_LocalScale: {x: 1, y: 1.5875, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &519420033
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519420028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39e707215679a7543a09a9e5d7f443a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Grow: {fileID: 1130518689}
 --- !u!1 &535938999 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8345099541018079818, guid: 7264f7561d2988147aea68969ce6c51d, type: 3}
@@ -2210,6 +2224,27 @@ EdgeCollider2D:
   m_AdjacentEndPoint: {x: 0, y: 0}
   m_UseAdjacentStartPoint: 0
   m_UseAdjacentEndPoint: 0
+--- !u!50 &535939006
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 535938999}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &562286549
 GameObject:
   m_ObjectHideFlags: 0
@@ -3617,7 +3652,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 885522403}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.7, y: 0.46, z: 0}
+  m_LocalPosition: {x: 3.7, y: 0.37, z: 0}
   m_LocalScale: {x: 3.418594, y: 0.7641562, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4382,7 +4417,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1129109486}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -1.75, y: 5.99, z: 0}
   m_LocalScale: {x: 1.0255783, y: 5.89643, z: 1}
   m_ConstrainProportionsScale: 0
@@ -4435,13 +4470,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_camera: {fileID: 519420031}
-  branch: {fileID: 8345099541018079818, guid: 7264f7561d2988147aea68969ce6c51d, type: 3}
+  branchSegment: {fileID: 8345099541018079818, guid: 7264f7561d2988147aea68969ce6c51d, type: 3}
   dottedLine: {fileID: 4498269142560102007, guid: 78b99e362f2d990469a6810b4ac628d2, type: 3}
+  collisionLayerName: Default
   colliderEndWidth: 0.16
-  slowTimestep: 0.05
+  slowTimestep: 0.02
   dampingRatio: 0.5
   frequency: 10
-  segmentLength: 0.3
+  segmentLength: 0.15
+  isDrawing: 0
 --- !u!1001 &1187845387
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5159,7 +5196,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1698363017
-  m_SortingLayer: -1
+  m_SortingLayer: -2
   m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -6277,7 +6314,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1650452651}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 10.22, y: -3.27, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -8402,7 +8439,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8345099541018079818, guid: 7264f7561d2988147aea68969ce6c51d, type: 3}
       propertyPath: m_Name
-      value: Branch
+      value: BranchSegment
+      objectReference: {fileID: 0}
+    - target: {fileID: 8345099541018079818, guid: 7264f7561d2988147aea68969ce6c51d, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 8345099541018079818, guid: 7264f7561d2988147aea68969ce6c51d, type: 3}
       propertyPath: m_TagString
