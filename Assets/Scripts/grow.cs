@@ -9,6 +9,7 @@ public class grow : MonoBehaviour
     public GameObject branchSegment;
     public GameObject dottedLine;
     public growthManager growthManager;
+    public GameObject head;
 
     public float colliderEndWidth = .16F;
     public float growTimestep = 0.02F;
@@ -91,18 +92,26 @@ public class grow : MonoBehaviour
             GameObject branchSegmentInstance = Instantiate(branchSegment);
 
             // start new segment on the end of previous one
+            Vector3 directionVector = currentPath[i+1] - currentPath[i];
+
             if(i == 0)
             {
                 branchSegmentInstance.transform.position = parentBranchSegment.transform.position 
                     + parentBranchSegment.GetComponent<LineRenderer>().GetPosition(1); 
             }
-            else
-            {  
+            else if(i + 2 < currentPath.Count)
+            {
                 Vector3 previousDirectionVector = currentPath[i] - currentPath[i-1];
-                branchSegmentInstance.transform.position = parentBranchSegment.transform.position + previousDirectionVector;
+                branchSegmentInstance.transform.position = parentBranchSegment.transform.position 
+                    + previousDirectionVector;
             }
-
-            Vector3 directionVector = currentPath[i+1] - currentPath[i];
+            else
+            {
+                Vector3 previousDirectionVector = currentPath[i] - currentPath[i-1];
+                SpawnHead(parentBranchSegment.transform.position + previousDirectionVector, directionVector);
+                Destroy(branchSegmentInstance);
+                StopGrowth();
+            }
 
             var currentLineRenderer = branchSegmentInstance.GetComponent<LineRenderer>();
             currentLineRenderer.SetPosition(0, Vector2.zero);
@@ -123,8 +132,20 @@ public class grow : MonoBehaviour
 
             yield return new WaitForSeconds(growTimestep);
         }
-
         StopGrowth();
+    }
+
+    void SpawnHead(Vector2 position, Vector2 direction)
+    {
+        var curHead = Instantiate(head);
+        curHead.transform.position = position;
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        curHead.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        FixedJoint2D fixedJoint = curHead.AddComponent<FixedJoint2D>();
+        fixedJoint.dampingRatio = dampingRatio;
+        fixedJoint.frequency = frequency;
+        fixedJoint.connectedBody = parentBranchSegment.gameObject.GetComponent<Rigidbody2D>();
+
     }
 
     void StopGrowth()
