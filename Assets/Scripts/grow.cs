@@ -127,7 +127,10 @@ public class grow : MonoBehaviour
             
             Rigidbody2D rigidBody = branchSegmentInstance.AddComponent<Rigidbody2D>();
             rigidBody.mass = segmentMass;
+            // rigidBody.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
+            rigidBody.collisionDetectionMode = CollisionDetectionMode2D.Discrete;
             CapsuleCollider2D collider = branchSegmentInstance.AddComponent<CapsuleCollider2D>();
+
 
             FixedJoint2D fixedJoint = branchSegmentInstance.AddComponent<FixedJoint2D>();
             fixedJoint.dampingRatio = dampingRatio;
