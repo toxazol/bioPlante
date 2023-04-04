@@ -16,6 +16,7 @@ public class grow : MonoBehaviour
     public float dampingRatio = 0.5F;
     public float frequency = 10F;
     public float segmentLength = 0.1F;
+    public float segmentMass = 0.1F;
 
     public bool isDrawing = false;
     bool isGrowing = false;
@@ -105,27 +106,35 @@ public class grow : MonoBehaviour
                 branchSegmentInstance.transform.position = parentBranchSegment.transform.position 
                     + previousDirectionVector;
             }
-            else
+            else // last segment
             {
-                Vector3 previousDirectionVector = currentPath[i] - currentPath[i-1];
-                SpawnHead(parentBranchSegment.transform.position + previousDirectionVector, directionVector);
+                // Vector3 previousDirectionVector = currentPath[i] - currentPath[i-1];
+                // SpawnHead(parentBranchSegment.transform.position + previousDirectionVector, directionVector);
                 Destroy(branchSegmentInstance);
                 StopGrowth();
             }
 
+            
+            branchSegmentInstance.transform.rotation = Quaternion.LookRotation(Vector3.forward, directionVector);
+            
             var currentLineRenderer = branchSegmentInstance.GetComponent<LineRenderer>();
             currentLineRenderer.SetPosition(0, Vector2.zero);
-            currentLineRenderer.SetPosition(1, directionVector);
+            currentLineRenderer.SetPosition(1, Vector2.up * segmentLength);
             
-            EdgeCollider2D collider = branchSegmentInstance.AddComponent<EdgeCollider2D>();
-            collider.SetPoints(new List<Vector2> {Vector2.zero, directionVector});
-            collider.edgeRadius = colliderEndWidth;
+            // EdgeCollider2D collider = branchSegmentInstance.AddComponent<EdgeCollider2D>();
+            // collider.SetPoints(new List<Vector2> {Vector2.zero, directionVector});
+            // collider.edgeRadius = colliderEndWidth;
             
             Rigidbody2D rigidBody = branchSegmentInstance.AddComponent<Rigidbody2D>();
+            rigidBody.mass = segmentMass;
+            CapsuleCollider2D collider = branchSegmentInstance.AddComponent<CapsuleCollider2D>();
+
             FixedJoint2D fixedJoint = branchSegmentInstance.AddComponent<FixedJoint2D>();
             fixedJoint.dampingRatio = dampingRatio;
             fixedJoint.frequency = frequency;
             fixedJoint.connectedBody = parentBranchSegment.gameObject.GetComponent<Rigidbody2D>();
+            fixedJoint.autoConfigureConnectedAnchor = false;
+            fixedJoint.connectedAnchor = Vector2.up * segmentLength;
 
             parentBranchSegment = branchSegmentInstance;
 
@@ -139,8 +148,7 @@ public class grow : MonoBehaviour
     {
         var curHead = Instantiate(head);
         curHead.transform.position = position;
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-        curHead.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        curHead.transform.rotation = Quaternion.LookRotation(Vector3.forward, direction);
         FixedJoint2D fixedJoint = curHead.AddComponent<FixedJoint2D>();
         fixedJoint.dampingRatio = dampingRatio;
         fixedJoint.frequency = frequency;
