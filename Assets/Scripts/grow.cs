@@ -124,9 +124,7 @@ public class grow : MonoBehaviour
             currentLineRenderer.SetPosition(0, Vector2.zero);
             currentLineRenderer.SetPosition(1, Vector2.up * segmentLength);
             
-            // EdgeCollider2D collider = branchSegmentInstance.AddComponent<EdgeCollider2D>();
-            // collider.SetPoints(new List<Vector2> {Vector2.zero, directionVector});
-            // collider.edgeRadius = colliderEndWidth;
+
             
             Rigidbody2D rigidBody = branchSegmentInstance.AddComponent<Rigidbody2D>();
             rigidBody.mass = segmentMass;
@@ -144,14 +142,6 @@ public class grow : MonoBehaviour
             fixedJoint.autoConfigureConnectedAnchor = false;
             fixedJoint.connectedAnchor = Vector2.up * segmentLength;
 
-            // FixedJoint2D fixedJoint1 = parentBranchSegment.AddComponent<FixedJoint2D>();
-            // fixedJoint1.anchor = Vector2.up * segmentLength;
-            // fixedJoint1.dampingRatio = dampingRatio;
-            // fixedJoint1.frequency = frequency;
-            // fixedJoint1.connectedBody = branchSegmentInstance.gameObject.GetComponent<Rigidbody2D>();
-            // fixedJoint1.autoConfigureConnectedAnchor = false;
-            // fixedJoint1.connectedAnchor = Vector2.zero;
-
             parentBranchSegment = branchSegmentInstance;
 
 
@@ -164,11 +154,14 @@ public class grow : MonoBehaviour
     {
         var curHead = Instantiate(head);
         curHead.transform.position = position;
-        curHead.transform.rotation = Quaternion.LookRotation(Vector3.forward, direction);
+        curHead.transform.rotation = Quaternion.LookRotation(Vector3.forward, Vector2.Perpendicular(direction));
         FixedJoint2D fixedJoint = curHead.AddComponent<FixedJoint2D>();
         fixedJoint.dampingRatio = dampingRatio;
         fixedJoint.frequency = frequency;
         fixedJoint.connectedBody = parentBranchSegment.gameObject.GetComponent<Rigidbody2D>();
+        fixedJoint.autoConfigureConnectedAnchor = false;
+        fixedJoint.connectedAnchor = Vector2.up * segmentLength;
+        fixedJoint.anchor = new Vector2(-0.6f, 0f);
 
     }
 
@@ -208,6 +201,7 @@ public class grow : MonoBehaviour
     bool CheckCollision(Vector3 position, string layerName)
     {
         int collideLayer = LayerMask.GetMask(layerName);
+        //TODO: optimize. All is unnecessary for grow
         var colliders = Physics2D.OverlapPointAll(position, collideLayer);
 
         if (colliders.Length > 0)
