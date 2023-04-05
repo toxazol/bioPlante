@@ -4,17 +4,18 @@ using UnityEngine;
 
 public class drag : MonoBehaviour
 {
-    // private Vector3 ResetCamera;
-    public GameObject Grow;
+    public grow Grow;
+    public states States;
     Vector3 Origin;
     Vector3 Diference;
     bool Drag = false;
-    // void Start () {
-    //     ResetCamera = Camera.main.transform.position;
-    // }
+
+
     void LateUpdate () {
 
-        if (Input.GetKey(KeyCode.Mouse0) && !Grow.GetComponent<grow>().isDrawing)
+        if (Input.GetKey(KeyCode.Mouse0) 
+            && !Grow.isDrawing
+            && !States.isHeadMoving)
         {
             Diference = (Camera.main.ScreenToWorldPoint(Input.mousePosition)) - Camera.main.transform.position;
             if (Drag == false)
@@ -32,10 +33,7 @@ public class drag : MonoBehaviour
         {
             Camera.main.transform.position = Origin-Diference;
         }
-        //RESET CAMERA TO STARTING POSITION WITH RIGHT CLICK
-        // if (Input.GetMouseButton (1)) {
-        //     Camera.main.transform.position = ResetCamera;
-        // }
+
     }
  
 }

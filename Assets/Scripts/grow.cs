@@ -13,13 +13,15 @@ public class grow : MonoBehaviour
     public PhysicsMaterial2D catchyMaterial;
 
     // public float colliderEndWidth = .16F;
-    public float growTimestep = 0.02F;
-    public float dampingRatio = 0.5F;
-    public float frequency = 10F;
-    public float segmentLength = 0.1F;
-    public float segmentMass = 0.1F;
-    public float angularDrag = 1000;
-    public float linearDrag = 1000;
+    public Vector2 headCenterToNeck = new Vector2(0, -0.6f);
+    public float growTimestep = 0.05F;
+    public float dampingRatio = 0.9F;
+    public float frequency = 70;
+    public float segmentLength = 0.3F;
+    public float segmentMass = 0.01F;
+    public float headMass = 0.05F;
+    public float angularDrag = 1;
+    public float linearDrag = 0;
 
     public bool isDrawing = false;
     bool isGrowing = false;
@@ -111,20 +113,18 @@ public class grow : MonoBehaviour
             }
             else // last segment
             {
-                // Vector3 previousDirectionVector = currentPath[i] - currentPath[i-1];
-                // SpawnHead(parentBranchSegment.transform.position + previousDirectionVector, directionVector);
                 Destroy(branchSegmentInstance);
+                Vector3 previousDirectionVector = currentPath[i] - currentPath[i-1];
+                SpawnHead(parentBranchSegment.transform.position + previousDirectionVector, directionVector);
                 StopGrowth();
             }
-
-            
+           
             branchSegmentInstance.transform.rotation = Quaternion.LookRotation(Vector3.forward, directionVector);
             
             var currentLineRenderer = branchSegmentInstance.GetComponent<LineRenderer>();
             currentLineRenderer.SetPosition(0, Vector2.zero);
             currentLineRenderer.SetPosition(1, Vector2.up * segmentLength);
             
-
             
             Rigidbody2D rigidBody = branchSegmentInstance.AddComponent<Rigidbody2D>();
             rigidBody.mass = segmentMass;
@@ -133,7 +133,6 @@ public class grow : MonoBehaviour
             rigidBody.sharedMaterial = catchyMaterial;
             rigidBody.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
             CapsuleCollider2D collider = branchSegmentInstance.AddComponent<CapsuleCollider2D>();
-
 
             FixedJoint2D fixedJoint = branchSegmentInstance.AddComponent<FixedJoint2D>();
             fixedJoint.dampingRatio = dampingRatio;
@@ -144,24 +143,34 @@ public class grow : MonoBehaviour
 
             parentBranchSegment = branchSegmentInstance;
 
-
             yield return new WaitForSeconds(growTimestep);
         }
         StopGrowth();
     }
 
-    void SpawnHead(Vector2 position, Vector2 direction)
+    void SpawnHead(Vector3 position, Vector2 direction)
     {
-        var curHead = Instantiate(head);
-        curHead.transform.position = position;
-        curHead.transform.rotation = Quaternion.LookRotation(Vector3.forward, Vector2.Perpendicular(direction));
-        FixedJoint2D fixedJoint = curHead.AddComponent<FixedJoint2D>();
+        var headInstance = Instantiate(head);
+        
+        headInstance.transform.rotation = Quaternion.LookRotation(Vector3.forward, direction);
+        headInstance.transform.position = position + headInstance.transform.up * headCenterToNeck.magnitude;
+
+        Rigidbody2D rigidBody = headInstance.AddComponent<Rigidbody2D>();
+        rigidBody.mass = headMass;
+        rigidBody.angularDrag = angularDrag;
+        rigidBody.drag = linearDrag;
+        rigidBody.sharedMaterial = catchyMaterial;
+        rigidBody.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
+        CapsuleCollider2D collider = headInstance.AddComponent<CapsuleCollider2D>();
+        collider.size = new Vector2(1.43f, 1.39f); // TODO: move to prefab
+        
+        FixedJoint2D fixedJoint = headInstance.AddComponent<FixedJoint2D>();
         fixedJoint.dampingRatio = dampingRatio;
         fixedJoint.frequency = frequency;
         fixedJoint.connectedBody = parentBranchSegment.gameObject.GetComponent<Rigidbody2D>();
         fixedJoint.autoConfigureConnectedAnchor = false;
         fixedJoint.connectedAnchor = Vector2.up * segmentLength;
-        fixedJoint.anchor = new Vector2(-0.6f, 0f);
+        fixedJoint.anchor = headCenterToNeck;
 
     }
 

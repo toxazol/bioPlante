@@ -1,0 +1,62 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &712342357481668462
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 712342357481668460}
+  - component: {fileID: 712342357481668459}
+  m_Layer: 0
+  m_Name: Grow
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &712342357481668460
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 712342357481668462}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &712342357481668459
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 712342357481668462}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee31c35d38277b246801fbe392869294, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_camera: {fileID: 0}
+  branchSegment: {fileID: 8345099541018079818, guid: 7264f7561d2988147aea68969ce6c51d, type: 3}
+  dottedLine: {fileID: 4498269142560102007, guid: 78b99e362f2d990469a6810b4ac628d2, type: 3}
+  growthManager: {fileID: 0}
+  head: {fileID: 5194026560934385828, guid: 93906ade0815c334b8700a5aab24990c, type: 3}
+  catchyMaterial: {fileID: 6200000, guid: c952eaef4e0ffed45ae9c6dc0c75b2a4, type: 2}
+  headCenterToNeck: {x: 0, y: -0.6}
+  growTimestep: 0.05
+  dampingRatio: 0.9
+  frequency: 70
+  segmentLength: 0.3
+  segmentMass: 0.01
+  headMass: 0.05
+  angularDrag: 1
+  linearDrag: 0
+  isDrawing: 0
