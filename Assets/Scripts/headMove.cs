@@ -6,7 +6,6 @@ using UnityEngine.Events;
 public class headMove : MonoBehaviour
 {
     public float moveForceFactor = 20;
-    public float noForceDistance = 0.3f;
     public grow Grow;
     public states States;
     GameObject movingHead;
@@ -26,19 +25,12 @@ public class headMove : MonoBehaviour
             }
             States.isHeadMoving = true;
         }
-        else if (Input.GetKey(KeyCode.Mouse0) && !Grow.isDrawing)
+        else if(Input.GetKey(KeyCode.Mouse0) && States.isHeadMoving && !Grow.isDrawing)
         {
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             var diffVector = mousePos - movingHead.transform.position;
-            if(diffVector.magnitude < noForceDistance)
-            {
-                movingHead.transform.position = (Vector2) mousePos;
-            }
-            else
-            {
-                movingHead.GetComponent<Rigidbody2D>()
-                    .AddForce(diffVector * moveForceFactor, ForceMode2D.Force);
-            }
+            movingHead.GetComponent<Rigidbody2D>()
+                    .AddForce(diffVector * moveForceFactor * Time.deltaTime, ForceMode2D.Force);
         } 
         else if(Input.GetKeyUp(KeyCode.Mouse0) && States.isHeadMoving)
         {

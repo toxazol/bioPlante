@@ -38,9 +38,28 @@ public class crabMan : MonoBehaviour
         var collisions = Physics2D.OverlapCollider(GetComponent<CircleCollider2D>(), filter, collidingBranchSegments);
         if(collisions > 0)
         {
-            if(collidingBranchSegments[0].gameObject.TryGetComponent<FixedJoint2D>(out FixedJoint2D jointToCut))
+            var cutSegment = collidingBranchSegments[0].gameObject;
+            if(cutSegment.TryGetComponent<FixedJoint2D>(out FixedJoint2D jointToCut))
             {
                 jointToCut.enabled = false;
+                // make cut parts unclickable
+                var connectedSegment = jointToCut.connectedBody;
+                if(connectedSegment == null)
+                {
+                    return true;
+                }
+                while(true)
+                {
+                    connectedSegment.gameObject.layer = LayerMask.NameToLayer("Default");
+                    if(connectedSegment.gameObject.TryGetComponent<FixedJoint2D>(out FixedJoint2D nextJoint))
+                    {
+                        connectedSegment = nextJoint.connectedBody;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
                 return true;
             }
         }

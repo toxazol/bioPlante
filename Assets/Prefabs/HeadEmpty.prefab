@@ -97,6 +97,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59d1b61901e612d479bf20df7ef8f5ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveForceCoefficient: 20
+  moveForceFactor: 2000
   Grow: {fileID: 712342357481668459, guid: ce2056dd211c0e24283d14b454bd0f3d, type: 3}
   States: {fileID: 6477281617193415442, guid: 7ebd834c56e4bb747927656c14b0d672, type: 3}

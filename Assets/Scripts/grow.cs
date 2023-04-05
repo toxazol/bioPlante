@@ -134,12 +134,20 @@ public class grow : MonoBehaviour
             rigidBody.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
             CapsuleCollider2D collider = branchSegmentInstance.AddComponent<CapsuleCollider2D>();
 
-            FixedJoint2D fixedJoint = branchSegmentInstance.AddComponent<FixedJoint2D>();
-            fixedJoint.dampingRatio = dampingRatio;
-            fixedJoint.frequency = frequency;
-            fixedJoint.connectedBody = parentBranchSegment.gameObject.GetComponent<Rigidbody2D>();
-            fixedJoint.autoConfigureConnectedAnchor = false;
-            fixedJoint.connectedAnchor = Vector2.up * segmentLength;
+            // FixedJoint2D fixedJoint = branchSegmentInstance.AddComponent<FixedJoint2D>();
+            // fixedJoint.dampingRatio = dampingRatio;
+            // fixedJoint.frequency = frequency;
+            // fixedJoint.connectedBody = parentBranchSegment.gameObject.GetComponent<Rigidbody2D>();
+            // fixedJoint.autoConfigureConnectedAnchor = false;
+            // fixedJoint.connectedAnchor = Vector2.up * segmentLength;
+
+            FixedJoint2D fixedJoint1 = parentBranchSegment.AddComponent<FixedJoint2D>();
+            fixedJoint1.anchor = Vector2.up * segmentLength;
+            fixedJoint1.dampingRatio = dampingRatio;
+            fixedJoint1.frequency = frequency;
+            fixedJoint1.connectedBody = branchSegmentInstance.gameObject.GetComponent<Rigidbody2D>();
+            fixedJoint1.autoConfigureConnectedAnchor = false;
+            fixedJoint1.connectedAnchor = Vector2.zero;
 
             parentBranchSegment = branchSegmentInstance;
 
@@ -164,13 +172,13 @@ public class grow : MonoBehaviour
         CapsuleCollider2D collider = headInstance.AddComponent<CapsuleCollider2D>();
         collider.size = new Vector2(1.43f, 1.39f); // TODO: move to prefab
         
-        FixedJoint2D fixedJoint = headInstance.AddComponent<FixedJoint2D>();
+        FixedJoint2D fixedJoint = parentBranchSegment.AddComponent<FixedJoint2D>();
         fixedJoint.dampingRatio = dampingRatio;
         fixedJoint.frequency = frequency;
-        fixedJoint.connectedBody = parentBranchSegment.gameObject.GetComponent<Rigidbody2D>();
+        fixedJoint.connectedBody = rigidBody;
         fixedJoint.autoConfigureConnectedAnchor = false;
-        fixedJoint.connectedAnchor = Vector2.up * segmentLength;
-        fixedJoint.anchor = headCenterToNeck;
+        fixedJoint.anchor = Vector2.up * segmentLength;
+        fixedJoint.connectedAnchor = headCenterToNeck;
 
     }
 
