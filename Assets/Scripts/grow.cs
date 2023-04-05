@@ -10,13 +10,16 @@ public class grow : MonoBehaviour
     public GameObject dottedLine;
     public growthManager growthManager;
     public GameObject head;
+    public PhysicsMaterial2D catchyMaterial;
 
-    public float colliderEndWidth = .16F;
+    // public float colliderEndWidth = .16F;
     public float growTimestep = 0.02F;
     public float dampingRatio = 0.5F;
     public float frequency = 10F;
     public float segmentLength = 0.1F;
     public float segmentMass = 0.1F;
+    public float angularDrag = 1000;
+    public float linearDrag = 1000;
 
     public bool isDrawing = false;
     bool isGrowing = false;
@@ -127,8 +130,10 @@ public class grow : MonoBehaviour
             
             Rigidbody2D rigidBody = branchSegmentInstance.AddComponent<Rigidbody2D>();
             rigidBody.mass = segmentMass;
-            // rigidBody.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
-            rigidBody.collisionDetectionMode = CollisionDetectionMode2D.Discrete;
+            rigidBody.angularDrag = angularDrag;
+            rigidBody.drag = linearDrag;
+            rigidBody.sharedMaterial = catchyMaterial;
+            rigidBody.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
             CapsuleCollider2D collider = branchSegmentInstance.AddComponent<CapsuleCollider2D>();
 
 
@@ -138,6 +143,14 @@ public class grow : MonoBehaviour
             fixedJoint.connectedBody = parentBranchSegment.gameObject.GetComponent<Rigidbody2D>();
             fixedJoint.autoConfigureConnectedAnchor = false;
             fixedJoint.connectedAnchor = Vector2.up * segmentLength;
+
+            // FixedJoint2D fixedJoint1 = parentBranchSegment.AddComponent<FixedJoint2D>();
+            // fixedJoint1.anchor = Vector2.up * segmentLength;
+            // fixedJoint1.dampingRatio = dampingRatio;
+            // fixedJoint1.frequency = frequency;
+            // fixedJoint1.connectedBody = branchSegmentInstance.gameObject.GetComponent<Rigidbody2D>();
+            // fixedJoint1.autoConfigureConnectedAnchor = false;
+            // fixedJoint1.connectedAnchor = Vector2.zero;
 
             parentBranchSegment = branchSegmentInstance;
 
