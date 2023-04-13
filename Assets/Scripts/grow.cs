@@ -170,7 +170,7 @@ public class grow : MonoBehaviour
         rigidBody.sharedMaterial = catchyMaterial;
         rigidBody.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
         CapsuleCollider2D collider = headInstance.AddComponent<CapsuleCollider2D>();
-        collider.size = new Vector2(1.43f, 1.39f); // TODO: move to prefab
+        // collider.size = new Vector2(1.43f, 1.39f); // TODO: make a circle collider?
         
         FixedJoint2D fixedJoint = parentBranchSegment.AddComponent<FixedJoint2D>();
         fixedJoint.dampingRatio = dampingRatio;
@@ -179,7 +179,7 @@ public class grow : MonoBehaviour
         fixedJoint.autoConfigureConnectedAnchor = false;
         fixedJoint.anchor = Vector2.up * segmentLength;
         fixedJoint.connectedAnchor = headCenterToNeck;
-
+        // Time.timeScale = 0;
     }
 
     void StopGrowth()
