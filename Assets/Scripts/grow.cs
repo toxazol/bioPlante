@@ -10,18 +10,23 @@ public class grow : MonoBehaviour
     public GameObject dottedLine;
     public growthManager growthManager;
     public GameObject head;
+    public GameObject leaf;
     public PhysicsMaterial2D catchyMaterial;
 
     // public float colliderEndWidth = .16F;
     public Vector2 headCenterToNeck = new Vector2(0, -0.6f);
+    public Vector2 leafCenterToNeck = new Vector2(0, -0.6f);
     public float growTimestep = 0.05F;
     public float dampingRatio = 0.9F;
     public float frequency = 70;
     public float segmentLength = 0.3F;
     public float segmentMass = 0.01F;
     public float headMass = 0.05F;
+    public float leafMass = 0.01F;
     public float angularDrag = 1;
     public float linearDrag = 0;
+    public int leafInterval = 5;
+    public float leafDivergeDeg = 45f;
 
     public bool isDrawing = false;
     bool isGrowing = false;
@@ -110,6 +115,10 @@ public class grow : MonoBehaviour
                 Vector3 previousDirectionVector = currentPath[i] - currentPath[i-1];
                 branchSegmentInstance.transform.position = parentBranchSegment.transform.position 
                     + previousDirectionVector;
+                if(i % leafInterval == 0)
+                {
+                    SpawnLeaf(parentBranchSegment.transform.position + previousDirectionVector, directionVector, i);
+                }
             }
             else // last segment
             {
@@ -180,6 +189,40 @@ public class grow : MonoBehaviour
         fixedJoint.anchor = Vector2.up * segmentLength;
         fixedJoint.connectedAnchor = headCenterToNeck;
         // Time.timeScale = 0;
+    }
+
+    void SpawnLeaf(Vector3 position, Vector2 direction, int branchIndex)
+    {
+        var isLeafOdd = branchIndex % (leafInterval * 2) != 0;
+        var leafVec = Quaternion.Euler(0, 0, isLeafOdd ? leafDivergeDeg : -leafDivergeDeg) * direction;
+
+        var leafInstance = Instantiate(leaf);
+        
+        leafInstance.transform.rotation = Quaternion.LookRotation(Vector3.forward, leafVec);
+        leafInstance.transform.position = position + leafInstance.transform.up * leafCenterToNeck.magnitude;
+
+        if(!isLeafOdd) {
+            var scale = leafInstance.transform.localScale;
+            scale.x *= -1;
+            leafInstance.transform.localScale = scale;
+        } 
+
+        Rigidbody2D rigidBody = leafInstance.AddComponent<Rigidbody2D>();
+        rigidBody.mass = leafMass;
+        rigidBody.angularDrag = angularDrag;
+        rigidBody.drag = linearDrag;
+        rigidBody.sharedMaterial = catchyMaterial;
+        rigidBody.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
+        // CapsuleCollider2D collider = leafInstance.AddComponent<CapsuleCollider2D>();
+        // collider.size = new Vector2(1.43f, 1.39f); // TODO: make a circle collider?
+        
+        FixedJoint2D fixedJoint = parentBranchSegment.AddComponent<FixedJoint2D>();
+        fixedJoint.dampingRatio = dampingRatio;
+        fixedJoint.frequency = frequency;
+        fixedJoint.connectedBody = rigidBody;
+        fixedJoint.autoConfigureConnectedAnchor = false;
+        fixedJoint.anchor = Vector2.up * segmentLength;
+        fixedJoint.connectedAnchor = leafCenterToNeck;
     }
 
     void StopGrowth()
