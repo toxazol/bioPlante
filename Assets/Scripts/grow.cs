@@ -27,6 +27,7 @@ public class grow : MonoBehaviour
     public float linearDrag = 0;
     public int leafInterval = 5;
     public float leafDivergeDeg = 45f;
+    public float leafGrowProbability = 0.8f;
 
     public bool isDrawing = false;
     bool isGrowing = false;
@@ -115,7 +116,7 @@ public class grow : MonoBehaviour
                 Vector3 previousDirectionVector = currentPath[i] - currentPath[i-1];
                 branchSegmentInstance.transform.position = parentBranchSegment.transform.position 
                     + previousDirectionVector;
-                if(i % leafInterval == 0)
+                if(i % leafInterval == 0 && Random.Range(0f, 1f) <= leafGrowProbability)
                 {
                     SpawnLeaf(parentBranchSegment.transform.position + previousDirectionVector, directionVector, i);
                 }

@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6946468698826864472}
   - component: {fileID: 6946468698826864473}
   - component: {fileID: 6946468698826864474}
+  - component: {fileID: 7427363122336278058}
   m_Layer: 0
   m_Name: growingLeaf
   m_TagString: Untagged
@@ -27,8 +28,8 @@ Transform:
   m_GameObject: {fileID: 6946468698826864475}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 2.5727599, y: 53.20888, z: -1.3798773}
-  m_LocalScale: {x: 40, y: 40, z: 40}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 45, y: 45, z: 45}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -106,3 +107,39 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &7427363122336278058
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6946468698826864475}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7db70e0ea77f5ac47a8f4565a9406397, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ShadowGroup: 0
+  m_ComponentVersion: 1
+  m_HasRenderer: 1
+  m_UseRendererSilhouette: 1
+  m_CastsShadows: 1
+  m_SelfShadows: 0
+  m_ApplyToSortingLayers: 6fa15b5489f63a65c398ca3a00000000f170688a
+  m_ShapePath:
+  - {x: -0.031689018, y: -0.06668905, z: -3.2858738e-10}
+  - {x: -0.035882134, y: -0.035635166, z: -0.000000037415923}
+  - {x: -0.035882134, y: 0.0025952207, z: -0.000000037415923}
+  - {x: -0.017598037, y: 0.037501186, z: -0.000000037415923}
+  - {x: -0.030026829, y: 0.074999996, z: -3.2858738e-10}
+  - {x: -0.0009761278, y: 0.075731575, z: -0.000000037415923}
+  - {x: 0.018391514, y: 0.058378093, z: -3.2858738e-10}
+  - {x: 0.03392988, y: 0.00591956, z: -0.000000037415923}
+  - {x: 0.03725426, y: -0.050594885, z: -0.000000037415923}
+  - {x: 0.020053705, y: -0.07001343, z: -3.2858738e-10}
+  m_ShapePathHash: 1898813007
+  m_Mesh: {fileID: 0}
+  m_InstanceId: -33076
+  m_LocalBounds:
+    m_Center: {x: 0.00068606064, y: 0.002859071, z: 0}
+    m_Extent: {x: 0.036568195, y: 0.072872505, z: 0}
